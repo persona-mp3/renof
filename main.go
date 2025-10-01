@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	soundex "github.com/persona-mp3/renof/soundex"
+	"github.com/persona-mp3/renof/finder"
+	"github.com/persona-mp3/renof/soundex"
 )
 
 func main() {
@@ -12,5 +13,21 @@ func main() {
 		fmt.Println("Enter value to encode")
 		return
 	}
-	soundex.SoundEnc(os.Args[1])
+
+	finder.LoadDefaults()
+	if len(os.Args) > 3 && os.Args[1] == "add" {
+		enc := soundex.Soundex(os.Args[1])
+		s := &finder.Soundenc{Name: os.Args[2], Enc: enc}
+		location := os.Args[3]
+		s.Add(location)
+		return
+	}
+
+	location, err := finder.Get(os.Args[1])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	finder.Display(location)
 }

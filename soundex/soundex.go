@@ -1,7 +1,6 @@
 package soundex
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -15,7 +14,7 @@ import (
 	would be something like this:
 			R321 -> DOCS/views/lib/src/ReduceFunc.md
 			R510 -> DOCS/methods/src/Remove.md
-
+https://en.wikipedia.org/wiki/Levenshtein_distance
 	Following that, we implement the Leveschtein Distance Algorithm to get all related/useful
 	results to the user as best as possible. Read more: https://en.wikipedia.org/wiki/Levenshtein_distance
 
@@ -56,7 +55,7 @@ func isDelimiter(s rune) bool {
 	return strings.ContainsRune(delimiters, s)
 }
 
-func SoundEnc(s string) string {
+func Soundex(s string) string {
 	if len(s) < 1 {
 		return ""
 	} else if len(s) < 2 {
@@ -91,12 +90,11 @@ func SoundEnc(s string) string {
 		if !ok {
 			continue
 		}
-		// Rule 3b.
+		// Rule 3b
 		_char1, _char2 = rune(s[start-1]), rune(s[next])
 		_codec1, _codec2 = tableEnc[_char1], tableEnc[_char2]
 
 		if isDelimiter(currChar) && _codec1 == _codec2 {
-			// coded as a single entry
 			builder.WriteString(_codec2)
 			continue
 		}
@@ -112,6 +110,5 @@ func SoundEnc(s string) string {
 			codec += "0"
 		}
 	}
-	fmt.Println("Final Codec -> ", codec)
 	return codec
 }
