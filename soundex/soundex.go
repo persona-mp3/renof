@@ -6,7 +6,7 @@ import (
 )
 
 /*
-	The whole point for the Soundex Encdoing is to help with Fuzzy Finding.
+	The whole point for the Soundex Encoding is to help with Fuzzy Finding.
 	All stored documentation, by file names are going to encoded. For example
 			ReduceFunc.md encoded as -> R321
 			Remove.md -> R510
