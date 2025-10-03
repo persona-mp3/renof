@@ -8,7 +8,9 @@ import (
 	"strings"
 )
 
-// Returns full path  to the file to be created
+// buildPath full path  to the file to be created. If the filePath has no parent directory 
+// buildPath returns it, otherwise, it returns the full path created with renof-docs, ready 
+// for IO operations.
 func buildPath(filePath string) (string, error) {
 	var parents string
 	if strings.Contains(filePath, string(os.PathSeparator)) {
@@ -16,10 +18,9 @@ func buildPath(filePath string) (string, error) {
 	} else {
 		return filePath, nil
 	}
-	fmt.Println("[*] extracted parents -> ", parents)
-	// remove home-dir
 	if len(parents) != 0 && strings.Contains(parents, HOME_DIR) {
-		_, p, _ := strings.Cut(parents, HOME_DIR+string(os.PathSeparator))
+		// to remove leading '/', otherwise os.error.20
+		_, p, _ := strings.Cut(parents, HOME_DIR + string(os.PathSeparator))
 		parents = p
 		fmt.Println("[*] home_dir stripped ->", parents)
 	}
@@ -30,7 +31,7 @@ func buildPath(filePath string) (string, error) {
 		return "", fmt.Errorf("[x] could not find last seperator")
 	}
 	src := filePath[lastOccurence:]
-	fmt.Printf("[*] parent-directories -> %s, src-file -> %s, full-path -> %s\n", parents, src, filepath.Join(BASE_DIR, parents, src))
+	fmt.Printf("[*] creating parents -> %s\n", filepath.Join(BASE_DIR, parents, src))
 	if err := os.MkdirAll(filepath.Join(BASE_DIR, parents), 0777); err != nil {
 		return "", fmt.Errorf("[x] error occured creating parent directories -> %w", err)
 	}

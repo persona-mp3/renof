@@ -36,25 +36,23 @@ func LoadDefaults() {
 		panic(err)
 	}
 
+	// HOME_DIR = homeDir
 	_, HOME_DIR, _ = strings.Cut(homeDir, string(os.PathSeparator))
-	soundec, contribSoundec := Soundenc{
-		Name: man,
-		Enc:  soundex.Soundex(man),
-	}, Soundenc{
-		Name: contrib,
-		Enc:  soundex.Soundex(contrib),
-	}
-	manLocation, contribLocation := Location{filepath.Join(BASE_DIR, man)}, Location{filepath.Join(BASE_DIR, contrib)}
+	soundec  := Soundenc{ Name: man, Enc:  soundex.Soundex(man) }
+	manLocation := Location{filepath.Join(BASE_DIR, man)}
+
+	contribSoundec := Soundenc{ Name: contrib, Enc:  soundex.Soundex(contrib)}
+	contribLocation :=  Location{filepath.Join(BASE_DIR, contrib)}
 
 	store[soundec] = manLocation
 	store[contribSoundec] = contribLocation
 
-	fmt.Println("[*] default configs loaded")
+	fmt.Println("[*] default loaded")
 	fmt.Println("[*] user $HOME_DIR configured -> ", HOME_DIR)
 }
 
-// Add() returns false if no IO operation occured. Panics if an error occured
-// in collecting user-input. And returns an error based on IO operation
+// Add() returns false if no IO operations occured. Panics if an error occured
+// trying to collecting user-input. And returns an error based on IO operation
 func (s *Soundenc) Add(location string) (bool, error) {
 	_, exists := store[*s]
 
@@ -72,7 +70,8 @@ func (s *Soundenc) Add(location string) (bool, error) {
 			fmt.Printf("[*] existing entry for %s updated\n", s.Name)
 		}
 	}
-	l := Location{filepath.Join(BASE_DIR, location)}
+	// l := Location{filepath.Join(BASE_DIR, location)}
+	l := Location{ location}
 	if err := l.CreateFile(); err != nil {
 		return false, err
 	}
@@ -94,13 +93,8 @@ func (l Location) CreateFile() error {
 		dst = l.string
 	}
 
-	// REEFACTOR!: Don't append the renof-docs, till all path is built
-	_, src, ok := strings.Cut(l.string, string(os.PathSeparator))
-	if !ok {
-		return fmt.Errorf("[?] unexpected error occured getting source")
-	}
-
-	srcFile, err := os.Open(string(os.PathSeparator) + src)
+	src := l.string
+	srcFile, err := os.Open(src)
 	if err != nil {
 		return fmt.Errorf("[x] error occured opening source file %w", err)
 	}
