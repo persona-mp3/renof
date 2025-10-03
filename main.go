@@ -19,7 +19,11 @@ func main() {
 		enc := soundex.Soundex(os.Args[1])
 		s := &finder.Soundenc{Name: os.Args[2], Enc: enc}
 		location := os.Args[3]
-		s.Add(location)
+		ok, err := s.Add(location)
+		if err != nil || !ok {
+			fmt.Println(err)
+			return
+		}
 		return
 	}
 
