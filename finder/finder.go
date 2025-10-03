@@ -40,7 +40,6 @@ func LoadDefaults() {
 	_, HOME_DIR, _ = strings.Cut(homeDir, string(os.PathSeparator))
 	soundec  := Soundenc{ Name: man, Enc:  soundex.Soundex(man) }
 	manLocation := Location{filepath.Join(BASE_DIR, man)}
-
 	contribSoundec := Soundenc{ Name: contrib, Enc:  soundex.Soundex(contrib)}
 	contribLocation :=  Location{filepath.Join(BASE_DIR, contrib)}
 
